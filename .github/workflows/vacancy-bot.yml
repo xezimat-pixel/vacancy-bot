@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: "*/10 * * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore: ["state.enc", "README.md"]
 
 concurrency:
   group: vacancy-bot

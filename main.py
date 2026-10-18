@@ -1017,6 +1017,8 @@ async def run_once(client, bot, state):
             except Exception as err:
                 log.error("Не отправилось: %s", err)
         save_state(state)
+    state["last_run"] = {"ts": time.time(), "sent": sent, "dropped": dropped,
+                         "pending": len(state.get("pending", [])), "ok": True}
     save_state(state)
     log.info("Готово: отправлено %d, отсеяно %d", sent, dropped)
 
@@ -1043,7 +1045,12 @@ async def main():
         if args.reset:
             reset(bot, state)
         if args.once:
-            await run_once(client, bot, state)
+            try:
+                await run_once(client, bot, state)
+            except Exception as err:
+                state["last_run"] = {"ts": time.time(), "ok": False, "error": str(err)[:500]}
+                save_state(state)
+                raise
             return
         log.info("Бот работает. Проверка каналов каждые %s мин, кнопки отвечают сразу. Остановить: Ctrl+C",
                  CFG.get("loop_minutes", 5))
