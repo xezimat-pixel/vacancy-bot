@@ -2,7 +2,7 @@ name: vacancy-bot
 
 on:
   schedule:
-    - cron: "7,17,27,37,47,57 * * * *"
+    - cron: "2,12,22,32,42,52 * * * *"
   workflow_dispatch:
   push:
     branches: [main]
